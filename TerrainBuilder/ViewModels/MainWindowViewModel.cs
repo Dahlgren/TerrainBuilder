@@ -3,6 +3,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TerrainBuilder.Models;
 using TerrainBuilder.Parsers;
 
@@ -37,6 +38,13 @@ namespace TerrainBuilder.ViewModels
             set { this.RaiseAndSetIfChanged(ref _templates, value); }
         }
         private List<TemplateLibraryFile> _templates;
+
+        public string MissingFiles
+        {
+            get { return _missingFiles; }
+            set { this.RaiseAndSetIfChanged(ref _missingFiles, value); }
+        }
+        private string _missingFiles;
 
         public ReactiveCommand<object> ChooseImportFilePathCommand { get; private set; }
         public ReactiveCommand<object> LoadImportFileCommand { get; private set; }
@@ -118,7 +126,34 @@ namespace TerrainBuilder.ViewModels
 
         private void CalculateCommandExecute()
         {
-            
+            var objects = new Dictionary<string, TemplateLibraryObject>();
+            var missingObjects = new List<string>();
+
+            foreach (var file in Templates)
+            {
+                foreach (var templateObject in file.Objects)
+                {
+                    objects.Add(templateObject.Name, templateObject);
+                }
+            }
+
+            foreach (var importObject in Imports.Distinct())
+            {
+                if (!objects.ContainsKey(importObject))
+                {
+                    missingObjects.Add(importObject);
+                }
+            }
+
+            var output = "";
+            missingObjects.Sort();
+
+            foreach (var missingObject in missingObjects)
+            {
+                output += missingObject + "\n";
+            }
+
+            MissingFiles = output;
         }
     }
 }
