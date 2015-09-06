@@ -50,13 +50,13 @@ namespace TerrainBuilder.ViewModels
             ChooseImportFilePathCommand.Subscribe(_ => this.ChooseImportFilePathCommandExecute());
 
             LoadImportFileCommand = ReactiveCommand.Create(this.WhenAny(vm => vm.ImportFilePath, fp => !string.IsNullOrWhiteSpace(fp.Value)));
-            LoadImportFileCommand.Subscribe(_ => this.LoadTemplatesCommandExecute());
+            LoadImportFileCommand.Subscribe(_ => this.LoadImportFileCommandExecute());
 
             ChooseTemplatesDirectoryPathCommand = ReactiveCommand.Create();
             ChooseTemplatesDirectoryPathCommand.Subscribe(_ => this.ChooseTemplatesDirectoryPathCommandExecute());
 
             LoadTemplatesCommand = ReactiveCommand.Create(this.WhenAny(vm => vm.TemplatesDirectoryPath, fp => !string.IsNullOrWhiteSpace(fp.Value)));
-            LoadTemplatesCommand.Subscribe(_ => this.LoadImportFileCommandExecute());
+            LoadTemplatesCommand.Subscribe(_ => this.LoadTemplatesCommandExecute());
 
             CalculateCommand = ReactiveCommand.Create(this.WhenAny(
                 vm => vm.Imports,
