@@ -3,6 +3,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace TerrainBuilder.ViewModels
 {
@@ -15,12 +16,12 @@ namespace TerrainBuilder.ViewModels
         }
         private string _importFilePath;
 
-        public List<object> Imports
+        public List<string> Imports
         {
             get { return _imports; }
             set { this.RaiseAndSetIfChanged(ref _imports, value); }
         }
-        private List<object> _imports;
+        private List<string> _imports;
 
         public string TemplatesDirectoryPath
         {
@@ -85,7 +86,20 @@ namespace TerrainBuilder.ViewModels
 
         private void LoadImportFileCommandExecute()
         {
-            Imports = new List<object>();
+            string[] lines = File.ReadAllLines(this.ImportFilePath);
+            List<string> objects = new List<string>();
+            Regex objectRegex = new Regex("^\"(.*)\";");
+
+            foreach (var line in lines)
+            {
+                var match = objectRegex.Match(line);
+                if (match.Success)
+                {
+                    objects.Add(match.Groups[1].Value);
+                }
+            }
+
+            Imports = objects;
         }
 
         private void ChooseTemplatesDirectoryPathCommandExecute()
