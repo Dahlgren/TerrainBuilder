@@ -3,6 +3,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using TerrainBuilder.Models;
 using TerrainBuilder.Parsers;
 
 namespace TerrainBuilder.ViewModels
@@ -30,12 +31,12 @@ namespace TerrainBuilder.ViewModels
         }
         private string _templatesDirectoryPath;
 
-        public List<object> Templates
+        public List<TemplateLibraryFile> Templates
         {
             get { return _templates; }
             set { this.RaiseAndSetIfChanged(ref _templates, value); }
         }
-        private List<object> _templates;
+        private List<TemplateLibraryFile> _templates;
 
         public ReactiveCommand<object> ChooseImportFilePathCommand { get; private set; }
         public ReactiveCommand<object> LoadImportFileCommand { get; private set; }
@@ -111,7 +112,8 @@ namespace TerrainBuilder.ViewModels
 
         private void LoadTemplatesCommandExecute()
         {
-            Templates = new List<object>();
+            var parser = new TemplateLibrariesParser(this.TemplatesDirectoryPath);
+            Templates = parser.Parse();
         }
 
         private void CalculateCommandExecute()
