@@ -3,7 +3,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
+using TerrainBuilder.Parsers;
 
 namespace TerrainBuilder.ViewModels
 {
@@ -86,20 +86,8 @@ namespace TerrainBuilder.ViewModels
 
         private void LoadImportFileCommandExecute()
         {
-            string[] lines = File.ReadAllLines(this.ImportFilePath);
-            List<string> objects = new List<string>();
-            Regex objectRegex = new Regex("^\"(.*)\";");
-
-            foreach (var line in lines)
-            {
-                var match = objectRegex.Match(line);
-                if (match.Success)
-                {
-                    objects.Add(match.Groups[1].Value);
-                }
-            }
-
-            Imports = objects;
+            var parser = new ImportFileParser(this.ImportFilePath);
+            Imports = parser.Parse();
         }
 
         private void ChooseTemplatesDirectoryPathCommandExecute()
