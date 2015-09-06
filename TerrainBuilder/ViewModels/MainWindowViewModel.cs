@@ -1,7 +1,8 @@
-﻿using ReactiveUI;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.IO;
 
 namespace TerrainBuilder.ViewModels
 {
@@ -67,11 +68,18 @@ namespace TerrainBuilder.ViewModels
 
         private void ChooseImportFilePathCommandExecute()
         {
-            var dialog = new OpenFileDialog();
-            var result = dialog.ShowDialog();
-            if (result == DialogResult.OK)
+            var dialog = new CommonOpenFileDialog {
+                EnsureFileExists = true,
+            };
+
+            if (this.ImportFilePath != null)
             {
-                ImportFilePath = dialog.FileName;
+                dialog.InitialDirectory = Path.GetDirectoryName(this.ImportFilePath);
+            }
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                this.ImportFilePath = dialog.FileName;
             }
         }
 
@@ -82,13 +90,20 @@ namespace TerrainBuilder.ViewModels
 
         private void ChooseTemplatesDirectoryPathCommandExecute()
         {
-            var dialog = new FolderBrowserDialog();
-            dialog.Description = "Select your TemplateLibs directory";
-            dialog.SelectedPath = this.TemplatesDirectoryPath;
-            var result = dialog.ShowDialog();
-            if (result == DialogResult.OK)
+            var dialog = new CommonOpenFileDialog {
+                EnsurePathExists = true,
+                IsFolderPicker = true,
+                Title = "Select your TemplateLibs directory",
+            };
+
+            if (this.TemplatesDirectoryPath != null)
             {
-                TemplatesDirectoryPath = dialog.SelectedPath;
+                dialog.InitialDirectory = this.TemplatesDirectoryPath;
+            }
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                this.TemplatesDirectoryPath = dialog.FileName;
             }
         }
 
