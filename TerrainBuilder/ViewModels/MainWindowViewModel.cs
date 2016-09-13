@@ -133,13 +133,13 @@ namespace TerrainBuilder.ViewModels
             {
                 foreach (var templateObject in file.Objects)
                 {
-                    objects.Add(templateObject.Name, templateObject);
+                    objects.Add(templateObject.Name.ToLower(), templateObject);
                 }
             }
 
             foreach (var importObject in Imports.Distinct())
             {
-                if (!objects.ContainsKey(importObject))
+                if (!objects.ContainsKey(importObject.ToLower()))
                 {
                     missingObjects.Add(importObject);
                 }
